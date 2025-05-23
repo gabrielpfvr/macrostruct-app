@@ -1,0 +1,11 @@
+{
+  "files": {
+    "main.js": "/macrostruct-app/static/js/main.30444c55.js",
+    "static/media/logo.png": "/macrostruct-app/static/media/logo.b0a7ff6d2c609c15bbcb.png",
+    "index.html": "/macrostruct-app/index.html",
+    "main.30444c55.js.map": "/macrostruct-app/static/js/main.30444c55.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.30444c55.js"
+  ]
+}
