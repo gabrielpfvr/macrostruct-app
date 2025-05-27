@@ -1,26 +1,30 @@
-const MOCK_CREDENTIALS = {
-  email: 'test@example.com',
-  password: '123456',
-};
+import { API_ENDPOINTS } from '../config/api';
 
-// Mock JWT
-const MOCK_JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ';
+export const login = async (username, password) => {
+  try {
+    const response = await fetch(API_ENDPOINTS.auth.login, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
 
-export const login = async (email, password) => {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 500));
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Invalid credentials');
+    }
 
-  if (email === MOCK_CREDENTIALS.email && password === MOCK_CREDENTIALS.password) {
-    // Store JWT in cookie
-    document.cookie = `jwt=${MOCK_JWT}; path=/; max-age=86400; secure; samesite=strict`;
+    const { token, expiresIn } = await response.json();
+
+    document.cookie = `jwt=${token}; path=/; max-age=${expiresIn}; secure; samesite=strict`;
     return { success: true };
+  } catch (error) {
+    throw new Error(error.message);
   }
-
-  throw new Error('E-mail ou senha inválidos');
 };
 
 export const logout = () => {
-  // Remove JWT cookie
   document.cookie = 'jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 };
 
@@ -30,6 +34,33 @@ export const getAuthToken = () => {
   return jwtCookie ? jwtCookie.split('=')[1] : null;
 };
 
-export const isAuthenticated = () => {
-  return !!getAuthToken();
-}; 
+export const verifyToken = async () => {
+  const token = getAuthToken();
+  if (!token) return false;
+
+  try {
+    const response = await fetch(API_ENDPOINTS.auth.checkToken, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      logout();
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Token verification failed:', error);
+    return false;
+  }
+};
+
+export const isAuthenticated = async () => {
+  const token = getAuthToken();
+  if (!token) return false;
+  
+  return await verifyToken();
+};
