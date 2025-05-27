@@ -4,5 +4,8 @@ export const API_ENDPOINTS = {
     auth: {
         login: `${API_BASE_URL}/auth`,
         checkToken: `${API_BASE_URL}/auth/check-token`,
+    },
+    users: {
+        create: `${API_BASE_URL}/users`
     }
 }; 

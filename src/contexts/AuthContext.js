@@ -35,6 +35,20 @@ export function AuthProvider({ children }) {
     }
   }, [navigate]);
 
+  const signup = useCallback(async (userData) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await authService.signup(userData);
+      return true;
+    } catch (err) {
+      setError(err.message);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   const logout = useCallback(() => {
     authService.logout();
     setIsAuthenticated(false);
@@ -47,6 +61,7 @@ export function AuthProvider({ children }) {
     error,
     login,
     logout,
+    signup,
   };
 
   return (

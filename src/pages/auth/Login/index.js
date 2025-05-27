@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { TextField, Typography, Link, Alert } from '@mui/material';
+import { TextField, Typography, Link, Alert, IconButton } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { PrimaryButton } from '../../../components/common/Button';
 import AuthLayout from '../../../layouts/AuthLayout';
@@ -10,6 +11,7 @@ import { FormContainer } from './styles';
 export default function Login() {
   const navigate = useNavigate();
   const { login, isLoading, error } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -64,10 +66,21 @@ export default function Login() {
         <TextField
           id="password"
           name="password"
-          type="password"
+          type={showPassword ? "text" : "password"}
           value={formData.password}
           onChange={handleChange}
           required
+          InputProps={{
+            endAdornment: (
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setShowPassword(prev => !prev)}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            ),
+          }}
         />
 
         <Link href="#" sx={{ alignSelf: 'center' }}>

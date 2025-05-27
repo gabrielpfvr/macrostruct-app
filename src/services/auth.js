@@ -1,5 +1,26 @@
 import { API_ENDPOINTS } from '../config/api';
 
+export const signup = async (userData) => {
+  try {
+    const response = await fetch(API_ENDPOINTS.users.create, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.created) {
+      const errorData = await response.json();
+      throw errorData.message;
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const login = async (username, password) => {
   try {
     const response = await fetch(API_ENDPOINTS.auth.login, {
