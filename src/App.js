@@ -5,7 +5,8 @@ import { ThemeProvider } from './theme/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import Login from './pages/auth/Login';
 import SignUp from './pages/auth/SignUp';
-import Home from './pages/home';
+import Home from './pages/Home';
+import Profile from './pages/Profile';
 import { ROUTES } from './config/constants';
 
 // Protected Route component
@@ -28,6 +29,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Home />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.PROFILE}
+              element={
+                <ProtectedRoute>
+                  <Profile />
                 </ProtectedRoute>
               }
             />

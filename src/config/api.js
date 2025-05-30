@@ -6,6 +6,7 @@ export const API_ENDPOINTS = {
         checkToken: `${API_BASE_URL}/auth/check-token`,
     },
     users: {
-        create: `${API_BASE_URL}/users`
+        create: `${API_BASE_URL}/users`,
+        profile: `${API_BASE_URL}/users/token`
     }
 }; 

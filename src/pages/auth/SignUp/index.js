@@ -17,6 +17,13 @@ export default function SignUp() {
     password: '',
     confirmPassword: '',
   });
+  const [touchedFields, setTouchedFields] = useState({
+    name: false,
+    email: false,
+    birthDate: false,
+    password: false,
+    confirmPassword: false,
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +33,16 @@ export default function SignUp() {
     }));
   };
 
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    setTouchedFields(prev => ({
+      ...prev,
+      [name]: true,
+    }));
+  };
+
   const getErrorMessage = (field) => {
+    if (!touchedFields[field]) return '';
     if (!formData[field]) return 'Campo obrigatório';
     
     switch (field) {
@@ -58,11 +74,9 @@ export default function SignUp() {
       birthDate: formData.birthDate
     };
 
-    try {
-      await signup(requestBody);
+    const response = await signup(requestBody);
+    if (response && !isLoading) {
       navigate(ROUTES.LOGIN);
-    } catch (error) {
-      console.error('Signup error:', error);
     }
   };
 
@@ -93,8 +107,9 @@ export default function SignUp() {
           type="text"
           value={formData.name}
           onChange={handleChange}
-          error={!!getErrorMessage('name')}
-          helperText={getErrorMessage('name')}
+          onBlur={handleBlur}
+          error={touchedFields.name && !!getErrorMessage('name')}
+          helperText={touchedFields.name ? getErrorMessage('name') : ''}
           required
         />
 
@@ -107,8 +122,9 @@ export default function SignUp() {
           type="email"
           value={formData.email}
           onChange={handleChange}
-          error={!!getErrorMessage('email')}
-          helperText={getErrorMessage('email')}
+          onBlur={handleBlur}
+          error={touchedFields.email && !!getErrorMessage('email')}
+          helperText={touchedFields.email ? getErrorMessage('email') : ''}
           required
         />
 
@@ -121,8 +137,9 @@ export default function SignUp() {
           type="date"
           value={formData.birthDate}
           onChange={handleChange}
-          error={!!getErrorMessage('birthDate')}
-          helperText={getErrorMessage('birthDate')}
+          onBlur={handleBlur}
+          error={touchedFields.birthDate && !!getErrorMessage('birthDate')}
+          helperText={touchedFields.birthDate ? getErrorMessage('birthDate') : ''}
           required
           InputLabelProps={{
             shrink: true,
@@ -138,8 +155,9 @@ export default function SignUp() {
           type="password"
           value={formData.password}
           onChange={handleChange}
-          error={!!getErrorMessage('password')}
-          helperText={getErrorMessage('password')}
+          onBlur={handleBlur}
+          error={touchedFields.password && !!getErrorMessage('password')}
+          helperText={touchedFields.password ? getErrorMessage('password') : ''}
           required
         />
 
@@ -152,8 +170,9 @@ export default function SignUp() {
           type="password"
           value={formData.confirmPassword}
           onChange={handleChange}
-          error={!!getErrorMessage('confirmPassword')}
-          helperText={getErrorMessage('confirmPassword')}
+          onBlur={handleBlur}
+          error={touchedFields.confirmPassword && !!getErrorMessage('confirmPassword')}
+          helperText={touchedFields.confirmPassword ? getErrorMessage('confirmPassword') : ''}
           required
         />
 

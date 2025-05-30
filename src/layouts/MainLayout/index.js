@@ -33,6 +33,10 @@ export default function MainLayout({ children }) {
     navigate(ROUTES.HOME);
   };
 
+  const handleProfileClick = () => {
+    navigate(ROUTES.PROFILE);
+  }
+
   return (
     <PageContainer>
       <HeaderContainer>
@@ -66,6 +70,7 @@ export default function MainLayout({ children }) {
           <HeaderButton
             variant="contained"
             startIcon={<PersonIcon />}
+            onClick={handleProfileClick}
           >
             Perfil
           </HeaderButton>

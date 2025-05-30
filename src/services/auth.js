@@ -10,12 +10,16 @@ export const signup = async (userData) => {
       body: JSON.stringify(userData),
     });
 
-    if (!response.created) {
-      const errorData = await response.json();
-      throw errorData.message;
+    if (response.status === 201) {
+      return true;
     }
 
-    return await response.json();
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to create account');
+    }
+
+    return data;
   } catch (error) {
     throw error;
   }
