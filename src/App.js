@@ -7,6 +7,8 @@ import Login from './pages/auth/Login';
 import SignUp from './pages/auth/SignUp';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
+import Food from './pages/Food';
+import FoodCreate from './pages/Food/Create';
 import { ROUTES } from './config/constants';
 
 // Protected Route component
@@ -37,6 +39,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.FOOD}
+              element={
+                <ProtectedRoute>
+                  <Food />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.FOOD_CREATE}
+              element={
+                <ProtectedRoute>
+                  <FoodCreate />
                 </ProtectedRoute>
               }
             />

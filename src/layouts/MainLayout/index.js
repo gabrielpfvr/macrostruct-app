@@ -37,6 +37,10 @@ export default function MainLayout({ children }) {
     navigate(ROUTES.PROFILE);
   }
 
+  const handleFoodClick = () => {
+    navigate(ROUTES.FOOD);
+  }
+
   return (
     <PageContainer>
       <HeaderContainer>
@@ -58,6 +62,7 @@ export default function MainLayout({ children }) {
           <HeaderButton
             variant="contained"
             startIcon={<RestaurantIcon />}
+            onClick={handleFoodClick}
           >
             Alimentos
           </HeaderButton>

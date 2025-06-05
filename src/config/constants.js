@@ -4,7 +4,9 @@ export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
   SIGNUP: '/signup',
-  PROFILE: '/profile'
+  PROFILE: '/profile',
+  FOOD: '/food',
+  FOOD_CREATE: '/food/create'
 };
 
 export const API = {

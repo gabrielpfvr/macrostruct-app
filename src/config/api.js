@@ -8,5 +8,10 @@ export const API_ENDPOINTS = {
     users: {
         create: `${API_BASE_URL}/users`,
         profile: `${API_BASE_URL}/users/token`
+    },
+    food: {
+        list: `${API_BASE_URL}/food`,
+        create: `${API_BASE_URL}/food`,
+        import: `${API_BASE_URL}/food/import`
     }
 }; 
