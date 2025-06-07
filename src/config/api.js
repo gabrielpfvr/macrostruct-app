@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
     food: {
         list: `${API_BASE_URL}/food`,
         create: `${API_BASE_URL}/food`,
-        import: `${API_BASE_URL}/food/import`
+        import: `${API_BASE_URL}/food/import`,
+        listAll: `${API_BASE_URL}/food/list`
     }
 }; 

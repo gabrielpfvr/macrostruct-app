@@ -6,7 +6,10 @@ export const ROUTES = {
   SIGNUP: '/signup',
   PROFILE: '/profile',
   FOOD: '/food',
-  FOOD_CREATE: '/food/create'
+  FOOD_CREATE: '/food/create',
+  DIET: '/diet',
+  DIET_CREATE: '/diet/create',
+  DIET_DETAIL: '/diet/:id'
 };
 
 export const API = {

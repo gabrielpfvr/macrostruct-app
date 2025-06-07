@@ -84,4 +84,26 @@ export const listFood = async (page = 0, size = 10, orderBy = 'calories', orderD
   } catch (error) {
     throw error;
   }
+};
+
+export const getFoodList = async () => {
+  try {
+    const response = await fetch(API_ENDPOINTS.food.listAll, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch food list');
+    }
+
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error('Error fetching food list:', error);
+    throw error;
+  }
 }; 

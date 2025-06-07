@@ -9,6 +9,9 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Food from './pages/Food';
 import FoodCreate from './pages/Food/Create';
+import Diet from './pages/Diet';
+import DietCreate from './pages/Diet/Create';
+import DietDetail from './pages/Diet/Detail';
 import { ROUTES } from './config/constants';
 
 // Protected Route component
@@ -55,6 +58,30 @@ function App() {
               element={
                 <ProtectedRoute>
                   <FoodCreate />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.DIET}
+              element={
+                <ProtectedRoute>
+                  <Diet />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.DIET_CREATE}
+              element={
+                <ProtectedRoute>
+                  <DietCreate />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.DIET_DETAIL}
+              element={
+                <ProtectedRoute>
+                  <DietDetail />
                 </ProtectedRoute>
               }
             />

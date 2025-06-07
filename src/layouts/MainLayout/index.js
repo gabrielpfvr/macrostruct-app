@@ -41,6 +41,10 @@ export default function MainLayout({ children }) {
     navigate(ROUTES.FOOD);
   }
 
+  const handleDietClick = () => {
+    navigate(ROUTES.DIET);
+  }
+
   return (
     <PageContainer>
       <HeaderContainer>
@@ -69,6 +73,7 @@ export default function MainLayout({ children }) {
           <HeaderButton
             variant="contained"
             startIcon={<FoodBankIcon />}
+            onClick={handleDietClick}
           >
             Minhas Dietas
           </HeaderButton>
