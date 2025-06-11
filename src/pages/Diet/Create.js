@@ -147,17 +147,17 @@ export default function CreateDiet() {
                 } else if (field === 'portion') {
                   const selectedFood = foods.find(f => f.description === food.foodDescription);
                   if (selectedFood) {
-                    const portion = Number(value);
+                    const portion = Math.round(Number(value));
                     if (isNaN(portion) || portion < 0) return food;
                     
                     const portionRatio = portion / selectedFood.servingSize;
                     return {
                       ...food,
                       portion,
-                      carbohydrates: (selectedFood.carbohydrates * portionRatio).toFixed(2),
-                      protein: (selectedFood.protein * portionRatio).toFixed(2),
-                      totalFat: (selectedFood.totalFat * portionRatio).toFixed(2),
-                      calories: (selectedFood.calories * portionRatio).toFixed(2)
+                      carbohydrates: Math.round(selectedFood.carbohydrates * portionRatio * 100) / 100,
+                      protein: Math.round(selectedFood.protein * portionRatio * 100) / 100,
+                      totalFat: Math.round(selectedFood.totalFat * portionRatio * 100) / 100,
+                      calories: Math.round(selectedFood.calories * portionRatio * 100) / 100
                     };
                   }
                 }
@@ -299,14 +299,6 @@ export default function CreateDiet() {
           <Typography variant="h6" gutterBottom>
             Refeições
           </Typography>
-          <Button
-            variant="outlined"
-            startIcon={<AddIcon />}
-            onClick={handleAddMeal}
-            sx={{ mb: 2 }}
-          >
-            Adicionar Refeição
-          </Button>
 
           {diet.meals.map((meal, mealIndex) => (
             <Card key={mealIndex} sx={{ mb: 2 }}>
@@ -347,15 +339,6 @@ export default function CreateDiet() {
                 </Grid>
 
                 <Box mt={2}>
-                  <Button
-                    variant="outlined"
-                    startIcon={<AddIcon />}
-                    onClick={() => handleAddFoodToMeal(mealIndex)}
-                    size="small"
-                  >
-                    Adicionar Alimento
-                  </Button>
-
                   {meal.foodList.map((food, foodIndex) => (
                     <Card key={foodIndex} sx={{ mt: 2, p: 2 }}>
                       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -439,10 +422,29 @@ export default function CreateDiet() {
                       </Grid>
                     </Card>
                   ))}
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddIcon />}
+                    onClick={() => handleAddFoodToMeal(mealIndex)}
+                    size="small"
+                    sx={{ mt: 2 }}
+                  >
+                    Adicionar Alimento
+                  </Button>
                 </Box>
               </CardContent>
             </Card>
           ))}
+        </Box>
+
+        <Box mt={4} display="flex" gap={2}>
+          <Button
+            variant="outlined"
+            startIcon={<AddIcon />}
+            onClick={handleAddMeal}
+          >
+            Adicionar Refeição
+          </Button>
         </Box>
 
         <Box mt={4} display="flex" gap={2}>

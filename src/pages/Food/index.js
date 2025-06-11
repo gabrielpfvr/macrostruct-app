@@ -15,11 +15,18 @@ import {
   TableRow,
   TablePagination,
   TableSortLabel,
+  Checkbox,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../layouts/MainLayout';
-import { listFood } from '../../services/food';
+import { listFood, deleteFoods } from '../../services/food';
 import { ROUTES } from '../../config/constants';
 
 export default function Food() {
@@ -33,6 +40,9 @@ export default function Food() {
   const [orderBy, setOrderBy] = useState('description');
   const [orderDirection, setOrderDirection] = useState('asc');
   const [totalElements, setTotalElements] = useState(0);
+  const [selected, setSelected] = useState([]);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     let timeoutId;
@@ -85,34 +95,96 @@ export default function Food() {
     navigate(ROUTES.FOOD_CREATE);
   };
 
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelected = foods.map((n) => n.id);
+      setSelected(newSelected);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleCheckboxClick = (event, id) => {
+    event.stopPropagation();
+    setSelected((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((item) => item !== id)
+        : [...prevSelected, id]
+    );
+  };
+
+  const handleDeleteClick = () => {
+    if (selected.length > 0) {
+      setDeleteDialogOpen(true);
+    }
+  };
+
+  // HERE is the fix: use deleteFoods from service with proper async handling
+  const handleDeleteConfirm = async () => {
+    setDeleteLoading(true);
+    try {
+      await deleteFoods(selected);  // <-- Using imported service function
+      setSuccess(`${selected.length} alimento(s) excluído(s) com sucesso`);
+      setSelected([]);
+      await fetchFoods();
+    } catch (err) {
+      console.error('Delete error:', err);
+      setError('Erro ao excluir alimento(s)');
+    } finally {
+      setDeleteLoading(false);
+      setDeleteDialogOpen(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+  };
+
+  const isSelected = (id) => selected.includes(id);
+
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ mt: 4 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-          <Typography variant="h4">
-            Alimentos Cadastrados
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={handleCreateClick}
-          >
-            Cadastrar Alimento
-          </Button>
+          <Typography variant="h4">Alimentos Cadastrados</Typography>
+          <Box>
+            {selected.length > 0 && (
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={handleDeleteClick}
+                sx={{ mr: 2 }}
+              >
+                Excluir Selecionados ({selected.length})
+              </Button>
+            )}
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={handleCreateClick}
+            >
+              Cadastrar Alimento
+            </Button>
+          </Box>
         </Box>
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
 
         <Paper>
           <TableContainer>
             <Table>
               <TableHead>
                 <TableRow>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      indeterminate={selected.length > 0 && selected.length < foods.length}
+                      checked={foods.length > 0 && selected.length === foods.length}
+                      onChange={handleSelectAllClick}
+                    />
+                  </TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={orderBy === 'description'}
@@ -172,27 +244,42 @@ export default function Food() {
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={6} align="center">
+                    <TableCell colSpan={7} align="center">
                       <CircularProgress />
                     </TableCell>
                   </TableRow>
                 ) : foods.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} align="center">
+                    <TableCell colSpan={7} align="center">
                       Nenhum alimento cadastrado
                     </TableCell>
                   </TableRow>
                 ) : (
-                  foods.map((food, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{food.description}</TableCell>
-                      <TableCell align="right">{food.servingSize}</TableCell>
-                      <TableCell align="right">{food.carbohydrates.toFixed(1)}</TableCell>
-                      <TableCell align="right">{food.protein.toFixed(1)}</TableCell>
-                      <TableCell align="right">{food.totalFat.toFixed(1)}</TableCell>
-                      <TableCell align="right">{food.calories.toFixed(1)}</TableCell>
-                    </TableRow>
-                  ))
+                  foods.map((food) => {
+                    const isItemSelected = isSelected(food.id);
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        key={food.id}
+                        selected={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            onChange={(event) => handleCheckboxClick(event, food.id)}
+                          />
+                        </TableCell>
+                        <TableCell>{food.description}</TableCell>
+                        <TableCell align="right">{food.servingSize}</TableCell>
+                        <TableCell align="right">{food.carbohydrates.toFixed(1)}</TableCell>
+                        <TableCell align="right">{food.protein.toFixed(1)}</TableCell>
+                        <TableCell align="right">{food.totalFat.toFixed(1)}</TableCell>
+                        <TableCell align="right">{food.calories.toFixed(1)}</TableCell>
+                      </TableRow>
+                    );
+                  })
                 )}
               </TableBody>
             </Table>
@@ -208,7 +295,24 @@ export default function Food() {
             labelRowsPerPage="Itens por página"
           />
         </Paper>
+
+        <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
+          <DialogTitle>Confirmar Exclusão</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Tem certeza que deseja excluir {selected.length} alimento(s)? Esta ação não pode ser desfeita.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteCancel} disabled={deleteLoading}>
+              Cancelar
+            </Button>
+            <Button onClick={handleDeleteConfirm} color="error" disabled={deleteLoading}>
+              {deleteLoading ? <CircularProgress size={24} /> : 'Excluir'}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </MainLayout>
   );
-} 
+}

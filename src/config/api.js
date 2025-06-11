@@ -13,6 +13,14 @@ export const API_ENDPOINTS = {
         list: `${API_BASE_URL}/food`,
         create: `${API_BASE_URL}/food`,
         import: `${API_BASE_URL}/food/import`,
-        listAll: `${API_BASE_URL}/food/list`
+        listAll: `${API_BASE_URL}/food/list`,
+        delete: `${API_BASE_URL}/food/delete-by-ids`
+    },
+    diet: {
+        list: `${API_BASE_URL}/diet`,
+        get: `${API_BASE_URL}/diet`,
+        create: `${API_BASE_URL}/diet`,
+        update: `${API_BASE_URL}/diet`,
+        delete: `${API_BASE_URL}/diet/{id}/delete`
     }
 }; 

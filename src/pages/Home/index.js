@@ -13,6 +13,10 @@ export default function Home() {
     navigate(ROUTES.FOOD_CREATE);
   };
 
+  const handleDietListClick = () => {
+    navigate(ROUTES.DIET);
+  };
+
   return (
     <MainLayout>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -45,7 +49,15 @@ export default function Home() {
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <Card>
+        <Card 
+            sx={{ 
+              cursor: 'pointer',
+              '&:hover': {
+                boxShadow: 6,
+              },
+            }}
+            onClick={handleDietListClick}
+          >
             <CardContent>
               <Box display="flex" alignItems="center" gap={1} mb={2}>
                 <CalculateIcon color="primary" />

@@ -1,6 +1,5 @@
 import { getAuthToken } from './auth';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+import { API_ENDPOINTS } from '../config/api';
 
 export const listDiets = async (page = 0, size = 10) => {
   try {
@@ -10,7 +9,7 @@ export const listDiets = async (page = 0, size = 10) => {
       size: size.toString(),
     });
 
-    const response = await fetch(`${API_BASE_URL}/diet?${queryParams}`, {
+    const response = await fetch(`${API_ENDPOINTS.diet.list}?${queryParams}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -32,7 +31,7 @@ export const listDiets = async (page = 0, size = 10) => {
 export const getDiet = async (id) => {
   try {
     const token = getAuthToken();
-    const response = await fetch(`${API_BASE_URL}/diet/${id}`, {
+    const response = await fetch(`${API_ENDPOINTS.diet.get}/${id}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -78,7 +77,7 @@ export const createDiet = async (dietData) => {
 
     console.log('Sending diet data:', requestData);
 
-    const response = await fetch(`${API_BASE_URL}/diet`, {
+    const response = await fetch(API_ENDPOINTS.diet.create, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -127,7 +126,7 @@ export const updateDiet = async (id, dietData) => {
 
     console.log('Sending diet update data:', requestData);
 
-    const response = await fetch(`${API_BASE_URL}/diet/${id}`, {
+    const response = await fetch(`${API_ENDPOINTS.diet.update}/${id}`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -145,6 +144,27 @@ export const updateDiet = async (id, dietData) => {
     return await response.json();
   } catch (error) {
     console.error('Error in updateDiet:', error);
+    throw error;
+  }
+};
+
+export const deleteDiet = async (id) => {
+  try {
+    const token = getAuthToken();
+    const response = await fetch(`${API_ENDPOINTS.diet.delete.replace('{id}', id)}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao excluir a dieta');
+    }
+
+    return response;
+  } catch (error) {
     throw error;
   }
 }; 

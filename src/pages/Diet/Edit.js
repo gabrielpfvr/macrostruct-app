@@ -35,37 +35,37 @@ export default function EditDiet() {
   });
 
   useEffect(() => {
+    const fetchDiet = async () => {
+      try {
+        const response = await getDiet(id);
+        setDiet({
+          description: response.description,
+          weight: response.weight,
+          height: response.height,
+          tdeee: response.tdeee,
+          meals: response.meals.map(meal => ({
+            description: meal.description,
+            time: meal.time,
+            ordination: meal.ordination,
+            foodList: meal.foodList.map(food => ({
+              foodDescription: food.foodDescription,
+              portion: food.portion,
+              carbohydrates: food.carbohydrates,
+              protein: food.protein,
+              totalFat: food.totalFat,
+              calories: food.calories
+            }))
+          }))
+        });
+      } catch (error) {
+        console.error('Error fetching diet:', error);
+        setError('Erro ao carregar dieta');
+      }
+    };
+
     fetchDiet();
     fetchFoods();
   }, [id]);
-
-  const fetchDiet = async () => {
-    try {
-      const response = await getDiet(id);
-      setDiet({
-        description: response.description,
-        weight: response.weight,
-        height: response.height,
-        tdeee: response.tdeee,
-        meals: response.meals.map(meal => ({
-          description: meal.description,
-          time: meal.time,
-          ordination: meal.ordination,
-          foodList: meal.foodList.map(food => ({
-            foodDescription: food.foodDescription,
-            portion: food.portion,
-            carbohydrates: food.carbohydrates,
-            protein: food.protein,
-            totalFat: food.totalFat,
-            calories: food.calories
-          }))
-        }))
-      });
-    } catch (error) {
-      console.error('Error fetching diet:', error);
-      setError('Erro ao carregar dieta');
-    }
-  };
 
   const fetchFoods = async () => {
     try {
@@ -177,17 +177,17 @@ export default function EditDiet() {
                 } else if (field === 'portion') {
                   const selectedFood = foods.find(f => f.description === food.foodDescription);
                   if (selectedFood) {
-                    const portion = Number(value);
+                    const portion = Math.round(Number(value));
                     if (isNaN(portion) || portion < 0) return food;
                     
                     const portionRatio = portion / selectedFood.servingSize;
                     return {
                       ...food,
                       portion,
-                      carbohydrates: (selectedFood.carbohydrates * portionRatio).toFixed(2),
-                      protein: (selectedFood.protein * portionRatio).toFixed(2),
-                      totalFat: (selectedFood.totalFat * portionRatio).toFixed(2),
-                      calories: (selectedFood.calories * portionRatio).toFixed(2)
+                      carbohydrates: Math.round(selectedFood.carbohydrates * portionRatio * 100) / 100,
+                      protein: Math.round(selectedFood.protein * portionRatio * 100) / 100,
+                      totalFat: Math.round(selectedFood.totalFat * portionRatio * 100) / 100,
+                      calories: Math.round(selectedFood.calories * portionRatio * 100) / 100
                     };
                   }
                 }
@@ -329,14 +329,6 @@ export default function EditDiet() {
           <Typography variant="h6" gutterBottom>
             Refeições
           </Typography>
-          <Button
-            variant="outlined"
-            startIcon={<AddIcon />}
-            onClick={handleAddMeal}
-            sx={{ mb: 2 }}
-          >
-            Adicionar Refeição
-          </Button>
 
           {diet.meals.map((meal, mealIndex) => (
             <Card key={mealIndex} sx={{ mb: 2 }}>
@@ -377,15 +369,6 @@ export default function EditDiet() {
                 </Grid>
 
                 <Box mt={2}>
-                  <Button
-                    variant="outlined"
-                    startIcon={<AddIcon />}
-                    onClick={() => handleAddFoodToMeal(mealIndex)}
-                    size="small"
-                  >
-                    Adicionar Alimento
-                  </Button>
-
                   {meal.foodList.map((food, foodIndex) => (
                     <Card key={foodIndex} sx={{ mt: 2, p: 2 }}>
                       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -426,12 +409,7 @@ export default function EditDiet() {
                             value={food.portion}
                             onChange={(e) => handleFoodChange(mealIndex, foodIndex, 'portion', e.target.value)}
                             required
-                            inputProps={{ 
-                              min: 1, 
-                              step: 1,
-                              inputMode: 'numeric',
-                              pattern: '[0-9]*'
-                            }}
+                            inputProps={{ min: 1, step: 1 }}
                             helperText="Quantidade em gramas"
                           />
                         </Grid>
@@ -474,10 +452,29 @@ export default function EditDiet() {
                       </Grid>
                     </Card>
                   ))}
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddIcon />}
+                    onClick={() => handleAddFoodToMeal(mealIndex)}
+                    size="small"
+                    sx={{ mt: 2 }}
+                  >
+                    Adicionar Alimento
+                  </Button>
                 </Box>
               </CardContent>
             </Card>
           ))}
+        </Box>
+
+        <Box mt={4} display="flex" gap={2}>
+          <Button
+            variant="outlined"
+            startIcon={<AddIcon />}
+            onClick={handleAddMeal}
+          >
+            Adicionar Refeição
+          </Button>
         </Box>
 
         <Box mt={4} display="flex" gap={2}>

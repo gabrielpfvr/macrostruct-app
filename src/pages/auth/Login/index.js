@@ -84,7 +84,7 @@ export default function Login() {
         />
 
         <Link href="#" sx={{ alignSelf: 'center' }}>
-          Esqueceu a senha?
+          Esqueceu a senha? Contate o administrador.
         </Link>
 
         <PrimaryButton

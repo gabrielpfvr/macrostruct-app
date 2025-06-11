@@ -8,6 +8,14 @@ import {
   CircularProgress,
   Alert,
   Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  useTheme,
 } from '@mui/material';
 import MainLayout from '../../layouts/MainLayout';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -17,25 +25,26 @@ import { ROUTES } from '../../config/constants';
 export default function DietDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const theme = useTheme();
   const [diet, setDiet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
+    const fetchDiet = async () => {
+      try {
+        const response = await getDiet(id);
+        setDiet(response);
+      } catch (error) {
+        console.error('Error fetching diet:', error);
+        setError('Erro ao carregar dieta');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchDiet();
   }, [id]);
-
-  const fetchDiet = async () => {
-    try {
-      const response = await getDiet(id);
-      setDiet(response);
-    } catch (error) {
-      console.error('Error fetching diet:', error);
-      setError('Erro ao carregar dieta');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -119,47 +128,131 @@ export default function DietDetail() {
           Refeições
         </Typography>
 
-        {diet.meals.map((meal, index) => (
-          <Card key={index} sx={{ mb: 3 }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                {meal.description} - {meal.time}
-              </Typography>
-              <Typography variant="subtitle1" gutterBottom>
-                Total de Calorias: {meal.totalCalories.toFixed(2)} kcal
-              </Typography>
-
-              <Grid container spacing={2}>
-                {meal.foodList.map((food, foodIndex) => (
-                  <Grid item xs={12} md={6} key={foodIndex}>
-                    <Card variant="outlined">
-                      <CardContent>
-                        <Typography variant="subtitle1" gutterBottom>
-                          {food.foodDescription}
-                        </Typography>
-                        <Typography variant="body2">
-                          <strong>Porção:</strong> {parseInt(food.portion, 10)}g
-                        </Typography>
-                        <Typography variant="body2">
-                          <strong>Carboidratos:</strong> {food.carbohydrates.toFixed(2)}g
-                        </Typography>
-                        <Typography variant="body2">
-                          <strong>Proteínas:</strong> {food.protein.toFixed(2)}g
-                        </Typography>
-                        <Typography variant="body2">
-                          <strong>Gorduras:</strong> {food.totalFat.toFixed(2)}g
-                        </Typography>
-                        <Typography variant="body2">
-                          <strong>Calorias:</strong> {food.calories.toFixed(2)} kcal
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            </CardContent>
-          </Card>
-        ))}
+        <TableContainer 
+          component={Paper} 
+          sx={{ 
+            mb: 4,
+            backgroundColor: theme.palette.background.paper
+          }}
+        >
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ 
+                  fontWeight: 'bold', 
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : '#f5f5f5',
+                  color: theme.palette.text.primary
+                }}>Refeição</TableCell>
+                <TableCell sx={{ 
+                  fontWeight: 'bold', 
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : '#f5f5f5',
+                  color: theme.palette.text.primary
+                }}>Horário</TableCell>
+                <TableCell sx={{ 
+                  fontWeight: 'bold', 
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : '#f5f5f5',
+                  color: theme.palette.text.primary
+                }}>Alimento</TableCell>
+                <TableCell sx={{ 
+                  fontWeight: 'bold', 
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : '#f5f5f5',
+                  color: theme.palette.text.primary
+                }} align="right">Porção (g)</TableCell>
+                <TableCell sx={{ 
+                  fontWeight: 'bold', 
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : '#f5f5f5',
+                  color: theme.palette.text.primary
+                }} align="right">Carboidratos (g)</TableCell>
+                <TableCell sx={{ 
+                  fontWeight: 'bold', 
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : '#f5f5f5',
+                  color: theme.palette.text.primary
+                }} align="right">Proteínas (g)</TableCell>
+                <TableCell sx={{ 
+                  fontWeight: 'bold', 
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : '#f5f5f5',
+                  color: theme.palette.text.primary
+                }} align="right">Gorduras (g)</TableCell>
+                <TableCell sx={{ 
+                  fontWeight: 'bold', 
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : '#f5f5f5',
+                  color: theme.palette.text.primary
+                }} align="right">Calorias (kcal)</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {diet.meals.map((meal, mealIndex) => (
+                <React.Fragment key={mealIndex}>
+                  {meal.foodList.map((food, foodIndex) => (
+                    <TableRow 
+                      key={`${mealIndex}-${foodIndex}`}
+                      sx={{ 
+                        '&:nth-of-type(odd)': { 
+                          backgroundColor: theme.palette.mode === 'dark' 
+                            ? 'rgba(255, 255, 255, 0.04)' 
+                            : '#fafafa' 
+                        },
+                        '&:hover': { 
+                          backgroundColor: theme.palette.mode === 'dark' 
+                            ? 'rgba(255, 255, 255, 0.08)' 
+                            : '#f0f0f0' 
+                        }
+                      }}
+                    >
+                      {foodIndex === 0 && (
+                        <TableCell 
+                          rowSpan={meal.foodList.length}
+                          sx={{ 
+                            fontWeight: 'bold',
+                            backgroundColor: theme.palette.mode === 'dark' 
+                              ? 'rgba(25, 118, 210, 0.12)' 
+                              : '#e3f2fd',
+                            borderRight: `1px solid ${theme.palette.divider}`
+                          }}
+                        >
+                          {meal.description}
+                        </TableCell>
+                      )}
+                      {foodIndex === 0 && (
+                        <TableCell 
+                          rowSpan={meal.foodList.length}
+                          sx={{ 
+                            backgroundColor: theme.palette.mode === 'dark' 
+                              ? 'rgba(25, 118, 210, 0.12)' 
+                              : '#e3f2fd',
+                            borderRight: `1px solid ${theme.palette.divider}`
+                          }}
+                        >
+                          {meal.time}
+                        </TableCell>
+                      )}
+                      <TableCell>{food.foodDescription}</TableCell>
+                      <TableCell align="right">{parseInt(food.portion, 10)}</TableCell>
+                      <TableCell align="right">{food.carbohydrates.toFixed(2)}</TableCell>
+                      <TableCell align="right">{food.protein.toFixed(2)}</TableCell>
+                      <TableCell align="right">{food.totalFat.toFixed(2)}</TableCell>
+                      <TableCell align="right">{food.calories.toFixed(2)}</TableCell>
+                    </TableRow>
+                  ))}
+                  <TableRow>
+                    <TableCell 
+                      colSpan={8} 
+                      sx={{ 
+                        backgroundColor: theme.palette.mode === 'dark' 
+                          ? 'rgba(46, 125, 50, 0.12)' 
+                          : '#e8f5e9',
+                        fontWeight: 'bold',
+                        borderTop: `2px solid ${theme.palette.mode === 'dark' ? 'rgba(46, 125, 50, 0.3)' : '#c8e6c9'}`
+                      }}
+                    >
+                      Total da Refeição: {meal.totalCalories.toFixed(2)} kcal
+                    </TableCell>
+                  </TableRow>
+                </React.Fragment>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
     </MainLayout>
   );

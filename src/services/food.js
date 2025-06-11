@@ -106,4 +106,23 @@ export const getFoodList = async () => {
     console.error('Error fetching food list:', error);
     throw error;
   }
-}; 
+};
+
+export const deleteFoods = async (ids) => {
+  const params = new URLSearchParams();
+  ids.forEach(id => params.append('ids', id));
+
+  const response = await fetch(`${API_ENDPOINTS.food.delete}?${params.toString()}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAuthToken()}`
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Erro ao excluir os alimentos');
+  }
+
+  return response;
+};
