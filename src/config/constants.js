@@ -9,7 +9,8 @@ export const ROUTES = {
   FOOD_CREATE: '/food/create',
   DIET: '/diet',
   DIET_CREATE: '/diet/create',
-  DIET_DETAIL: '/diet/:id'
+  DIET_DETAIL: '/diet/:id',
+  DIET_EDIT: '/diet/:id/edit'
 };
 
 export const API = {

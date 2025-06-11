@@ -15,13 +15,14 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MainLayout from '../../layouts/MainLayout';
-import { useNavigate } from 'react-router-dom';
-import { createDiet } from '../../services/diet';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getDiet, updateDiet } from '../../services/diet';
 import { getFoodList } from '../../services/food';
 import { ROUTES } from '../../config/constants';
 
-export default function CreateDiet() {
+export default function EditDiet() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [foods, setFoods] = useState([]);
@@ -34,8 +35,37 @@ export default function CreateDiet() {
   });
 
   useEffect(() => {
+    fetchDiet();
     fetchFoods();
-  }, []);
+  }, [id]);
+
+  const fetchDiet = async () => {
+    try {
+      const response = await getDiet(id);
+      setDiet({
+        description: response.description,
+        weight: response.weight,
+        height: response.height,
+        tdeee: response.tdeee,
+        meals: response.meals.map(meal => ({
+          description: meal.description,
+          time: meal.time,
+          ordination: meal.ordination,
+          foodList: meal.foodList.map(food => ({
+            foodDescription: food.foodDescription,
+            portion: food.portion,
+            carbohydrates: food.carbohydrates,
+            protein: food.protein,
+            totalFat: food.totalFat,
+            calories: food.calories
+          }))
+        }))
+      });
+    } catch (error) {
+      console.error('Error fetching diet:', error);
+      setError('Erro ao carregar dieta');
+    }
+  };
 
   const fetchFoods = async () => {
     try {
@@ -220,7 +250,7 @@ export default function CreateDiet() {
           ordination: meal.ordination,
           foodList: meal.foodList.map(food => ({
             foodDescription: food.foodDescription.trim(),
-            portion: Math.round(Number(food.portion)), // Ensure integer portion
+            portion: Math.round(Number(food.portion)),
             carbohydrates: Number(food.carbohydrates),
             protein: Number(food.protein),
             totalFat: Number(food.totalFat),
@@ -230,11 +260,11 @@ export default function CreateDiet() {
       };
 
       console.log('Submitting diet data:', dietData);
-      await createDiet(dietData);
+      await updateDiet(id, dietData);
       navigate(ROUTES.DIET);
     } catch (error) {
-      console.error('Error creating diet:', error);
-      setError('Erro ao criar dieta');
+      console.error('Error updating diet:', error);
+      setError('Erro ao atualizar dieta');
     } finally {
       setLoading(false);
     }
@@ -244,7 +274,7 @@ export default function CreateDiet() {
     <MainLayout>
       <Box component="form" onSubmit={handleSubmit}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Nova Dieta
+          Editar Dieta
         </Typography>
 
         {error && (
@@ -396,7 +426,12 @@ export default function CreateDiet() {
                             value={food.portion}
                             onChange={(e) => handleFoodChange(mealIndex, foodIndex, 'portion', e.target.value)}
                             required
-                            inputProps={{ min: 1, step: 1 }}
+                            inputProps={{ 
+                              min: 1, 
+                              step: 1,
+                              inputMode: 'numeric',
+                              pattern: '[0-9]*'
+                            }}
                             helperText="Quantidade em gramas"
                           />
                         </Grid>
@@ -452,7 +487,7 @@ export default function CreateDiet() {
             type="submit"
             disabled={loading}
           >
-            {loading ? <CircularProgress size={24} /> : 'Criar Dieta'}
+            {loading ? <CircularProgress size={24} /> : 'Salvar Alterações'}
           </Button>
           <Button
             variant="outlined"

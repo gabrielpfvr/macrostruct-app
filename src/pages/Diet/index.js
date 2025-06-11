@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import MainLayout from '../../layouts/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import { listDiets } from '../../services/diet';
@@ -38,6 +39,10 @@ export default function Diet() {
 
   const handleCreateDiet = () => {
     navigate(ROUTES.DIET_CREATE);
+  };
+
+  const handleEditDiet = (id) => {
+    navigate(`/diet/${id}/edit`);
   };
 
   const handleViewDiet = (id) => {
@@ -83,6 +88,13 @@ export default function Diet() {
                     <IconButton
                       size="small"
                       onClick={() => handleViewDiet(diet.id)}
+                      sx={{ mr: 1 }}
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleEditDiet(diet.id)}
                     >
                       <EditIcon />
                     </IconButton>
@@ -95,10 +107,10 @@ export default function Diet() {
                   Altura: {diet.height}m
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  TDEE: {diet.tdeee} kcal
+                  TDEE: {diet.tdee} kcal
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {diet.meals?.length || 0} refeições
+                  {diet.totalMeals || 0} refeições
                 </Typography>
               </CardContent>
             </Card>

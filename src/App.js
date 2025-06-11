@@ -12,6 +12,7 @@ import FoodCreate from './pages/Food/Create';
 import Diet from './pages/Diet';
 import DietCreate from './pages/Diet/Create';
 import DietDetail from './pages/Diet/Detail';
+import DietEdit from './pages/Diet/Edit';
 import { ROUTES } from './config/constants';
 
 // Protected Route component
@@ -82,6 +83,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <DietDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.DIET_EDIT}
+              element={
+                <ProtectedRoute>
+                  <DietEdit />
                 </ProtectedRoute>
               }
             />

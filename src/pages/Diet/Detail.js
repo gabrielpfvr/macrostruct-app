@@ -103,7 +103,12 @@ export default function DietDetail() {
               </Grid>
               <Grid item xs={12} md={6}>
                 <Typography variant="body1">
-                  <strong>TDEE:</strong> {diet.tdeee} kcal
+                  <strong>TDEE:</strong> {diet.tdee} kcal
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography variant="body1">
+                  <strong>Total de Calorias:</strong> {diet.totalCalories.toFixed(2)} kcal
                 </Typography>
               </Grid>
             </Grid>
@@ -120,6 +125,9 @@ export default function DietDetail() {
               <Typography variant="h6" gutterBottom>
                 {meal.description} - {meal.time}
               </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                Total de Calorias: {meal.totalCalories.toFixed(2)} kcal
+              </Typography>
 
               <Grid container spacing={2}>
                 {meal.foodList.map((food, foodIndex) => (
@@ -130,19 +138,19 @@ export default function DietDetail() {
                           {food.foodDescription}
                         </Typography>
                         <Typography variant="body2">
-                          <strong>Porção:</strong> {food.portion}
+                          <strong>Porção:</strong> {parseInt(food.portion, 10)}g
                         </Typography>
                         <Typography variant="body2">
-                          <strong>Carboidratos:</strong> {food.carbohydrates}g
+                          <strong>Carboidratos:</strong> {food.carbohydrates.toFixed(2)}g
                         </Typography>
                         <Typography variant="body2">
-                          <strong>Proteínas:</strong> {food.protein}g
+                          <strong>Proteínas:</strong> {food.protein.toFixed(2)}g
                         </Typography>
                         <Typography variant="body2">
-                          <strong>Gorduras:</strong> {food.totalFat}g
+                          <strong>Gorduras:</strong> {food.totalFat.toFixed(2)}g
                         </Typography>
                         <Typography variant="body2">
-                          <strong>Calorias:</strong> {food.calories} kcal
+                          <strong>Calorias:</strong> {food.calories.toFixed(2)} kcal
                         </Typography>
                       </CardContent>
                     </Card>
