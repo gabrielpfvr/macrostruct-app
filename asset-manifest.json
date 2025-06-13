@@ -1,11 +1,11 @@
 {
   "files": {
-    "main.js": "/macrostruct-app/static/js/main.079822db.js",
+    "main.js": "/macrostruct-app/static/js/main.df2a4074.js",
     "static/media/logo.png": "/macrostruct-app/static/media/logo.b0a7ff6d2c609c15bbcb.png",
     "index.html": "/macrostruct-app/index.html",
-    "main.079822db.js.map": "/macrostruct-app/static/js/main.079822db.js.map"
+    "main.df2a4074.js.map": "/macrostruct-app/static/js/main.df2a4074.js.map"
   },
   "entrypoints": [
-    "static/js/main.079822db.js"
+    "static/js/main.df2a4074.js"
   ]
 }
