@@ -251,6 +251,15 @@ export default function FoodCreate() {
           </TabPanel>
 
           <TabPanel value={tabValue} index={1}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+              <Button
+                variant="outlined"
+                href="/planilha-exemplo.xlsx"
+                download
+              >
+                Baixar Modelo de Excel
+              </Button>
+            </Box>
             <form onSubmit={handleFileSubmit}>
               <Box
                 sx={{

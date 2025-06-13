@@ -23,7 +23,7 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/macrostruct-app">
       <ThemeProvider>
         <AuthProvider>
           <CssBaseline />
