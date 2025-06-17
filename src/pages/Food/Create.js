@@ -254,7 +254,7 @@ export default function FoodCreate() {
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
               <Button
                 variant="outlined"
-                href="/planilha-exemplo.xlsx"
+                href="/macrostruct-app/planilha-exemplo.xlsx"
                 download
               >
                 Baixar Modelo de Excel
